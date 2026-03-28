@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="NonComparativeSorts/NonComparativeSorts.csproj" />
+  <Project Path="NonComparativeSortsTests/NonComparativeSortsTests.csproj" />
+</Solution>
