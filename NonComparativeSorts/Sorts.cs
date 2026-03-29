@@ -1,4 +1,6 @@
-﻿namespace NonComparativeSorts
+﻿using System.Runtime.CompilerServices;
+
+namespace NonComparativeSorts
 {
     public abstract class Sorts
     {
@@ -87,9 +89,7 @@
             int max = data.Max();
             //divide the range into bucketCount segments, ideally of equal length
             int bucketWidth = (int)Math.Ceiling((double)(max - min + 1) / bucketCount);
-            //int q = (max - min + 1) / bucketWidth;
-            //int r = (max - min + 1) % bucketWidth;
-            //if (max - min + 1 != (q * bucketWidth + r)) { throw new Exception("euclidean division disagrees with input range. check your math, nerd :3"); }
+
             for (int i = 0; i < data.Count; i++)
             {
                 buckets[(data[i] - min)/bucketWidth].Add(data[i]);
@@ -151,5 +151,48 @@
                 data[i] += min;
             }
         }
+
+        public static void BitwiseRadixSort(List<int> data) //radix sort in base 2
+        {
+            Func<int, int, int> BitDecomposition = (n, k) => (n >> k) & 1;
+            int min = data.Min();
+            for (int i = 0; i < data.Count; i++) //eliminate negatives by shifting values around
+            {
+                data[i] -= min;
+            }
+
+            List<List<int>> buckets = new();
+            buckets.Add(new());
+            buckets.Add(new());
+
+
+            for (int iterations = 0; iterations < (int)Math.Ceiling(Math.Log2(data.Max())); iterations++)
+            {
+                for (int i = 0; i < data.Count; i++)
+                {
+                    buckets[BitDecomposition(data[i], iterations)].Add(data[i]);
+                }
+                int k = 0;
+                for (int i = 0; i < buckets.Count; i++)
+                {
+                    for (int j = 0; j < buckets[i].Count; j++)
+                    {
+                        data[k] = buckets[i][j];
+                        k++;
+                    }
+                }
+                for (int i = 0; i < 2; i++)
+                {
+                    buckets[i].Clear();
+                }
+            }
+
+            for (int i = 0; i < data.Count; i++) //restore original values by shifting everything back
+            {
+                data[i] += min;
+            }
+        }
+
+        
     }
 }
